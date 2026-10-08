@@ -1,0 +1,105 @@
+{
+  "version": "0.1.0",
+  "recorded_date": "2026-10-08",
+  "environment": {
+    "os": "Linux x86_64",
+    "python": "3.13.5",
+    "dependencies": {
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "opencv-python-headless": "4.13.0.92",
+      "Pillow": "12.3.0",
+      "filelock": "3.29.0",
+      "pytest": "9.0.2",
+      "setuptools": "82.0.1"
+    }
+  },
+  "pytest": {
+    "tests": 59,
+    "passed": 57,
+    "skipped": 2,
+    "failures": 0,
+    "seconds": 26.954,
+    "skip_reason": "PyCOLMAP not installed; optional backend and independent reader checks skipped"
+  },
+  "sparse_example": {
+    "backend": "lite",
+    "seed_images": [
+      1,
+      5
+    ],
+    "seed_parallax_deg": 8.979778377999214,
+    "landmarks_before_refinement": 3203,
+    "scale": "arbitrary",
+    "intrinsics_optimized": false,
+    "bundle_adjustment": {
+      "accepted": true,
+      "converged": true,
+      "evaluations": 13,
+      "point_budget": 1200,
+      "cost_before": 259.7722369590565,
+      "cost_after": 102.47576807253151,
+      "gauge": "first camera fixed; one baseline length fixed by residual",
+      "termination": "Both `ftol` and `xtol` termination conditions are satisfied."
+    },
+    "registered_images": 8,
+    "input_images": 8,
+    "points": 1199,
+    "reprojection_median_px": 0.17377509818238715,
+    "reprojection_p95_px": 0.4983182562114933,
+    "point_error_definition": "maximum observation reprojection error per landmark",
+    "unregistered": [],
+    "status": "complete",
+    "elapsed_seconds": 10.404
+  },
+  "calibrated_stereo_example": {
+    "backend": "stereo-sgbm",
+    "points": 53735,
+    "faces": 104790,
+    "registered_images": 2,
+    "input_images": 2,
+    "scale": "m",
+    "valid_pixel_fraction": 0.5524974279835391,
+    "left_right_threshold_px": 1.0,
+    "max_depth": 15.0,
+    "stride": 2,
+    "baseline": 0.23566573028454485,
+    "depth_median": 4.599636554718018,
+    "surface_type": "open grid surface; no watertightness or metric-accuracy guarantee",
+    "status": "complete",
+    "elapsed_seconds": 0.27
+  },
+  "independent_synthetic_truth_comparison": {
+    "seed_baseline_scene_units": 0.9218603397400223,
+    "camera_center_max_error_scene_units": 0.0006782171419338068,
+    "sparse_nearest_depth_plane_median_error_scene_units": 0.0032105608950399045,
+    "stereo_nearest_depth_plane_median_error_m": 0.004995917999999655
+  },
+  "browser": {
+    "report_dom_and_orbit": "passed",
+    "report_mobile_390px": "passed",
+    "report_javascript_errors": [],
+    "workbench_static_layout": "rendered",
+    "live_browser_upload_flow": "not executed: browser navigation to loopback blocked by environment policy"
+  },
+  "wheel": {
+    "built": true,
+    "backend": "setuptools.build_meta.build_wheel",
+    "frontend_attempt": "pip wheel timed out; direct PEP 517 backend build succeeded",
+    "installed_outside_source": true,
+    "http_worker_test": true,
+    "fresh_dependency_install": false
+  },
+  "publication": {
+    "remote_created": false,
+    "remote_pushed": false,
+    "dry_run_passed": true
+  },
+  "limitations": [
+    "synthetic fixtures only, not real-world accuracy benchmarks",
+    "no Windows/macOS execution",
+    "no full browser upload flow; loopback navigation blocked by environment policy",
+    "no external security audit",
+    "elapsed_seconds is recorded before all exports finish, not full wall-clock timing"
+  ]
+}

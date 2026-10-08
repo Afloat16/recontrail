@@ -1,0 +1,36 @@
+name: Bug report / 问题报告
+description: Report a reproducible problem without private captures or tokens.
+title: "[Bug] "
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment / 运行环境
+      description: Paste `python -m recontrail doctor`, OS and installation method. Remove private paths.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction / 复现方式
+      description: Exact command or UI steps; prefer the original synthetic demo. Do not attach private photos or tokens.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior / 预期与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence / 脱敏证据
+      description: Relevant diagnostic metrics or error text; distinguish sparse points, dense points and mesh outputs.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy and scope
+      options:
+        - label: I removed access tokens, private photos, personal paths and other confidential data.
+          required: true

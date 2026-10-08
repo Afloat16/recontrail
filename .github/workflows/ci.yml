@@ -1,0 +1,38 @@
+name: Tests and package
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.10', '3.13']
+    env:
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install runtime and test tools
+        run: python -m pip install -e ".[dev]"
+      - name: Compile source
+        run: python -m compileall -q src scripts
+      - name: Run core and integration tests
+        run: python -m pytest -q --junitxml=test-results.xml
+      - name: Build source and wheel distributions
+        run: python -m build
+      - name: Inspect installed environment
+        run: python -m recontrail doctor

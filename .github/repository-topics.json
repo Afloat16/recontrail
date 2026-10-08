@@ -1,0 +1,24 @@
+{
+  "names": [
+    "3d-reconstruction",
+    "photogrammetry",
+    "structure-from-motion",
+    "sfm",
+    "computer-vision",
+    "multi-view-geometry",
+    "stereo-vision",
+    "point-cloud",
+    "camera-calibration",
+    "colmap",
+    "opencv",
+    "python",
+    "local-first",
+    "offline",
+    "cpu",
+    "image-quality",
+    "3d-visualization",
+    "reproducible-research",
+    "video-processing",
+    "mesh-generation"
+  ]
+}

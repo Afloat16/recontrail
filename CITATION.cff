@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "Please cite this software and the applicable algorithm/backend references listed in docs/REFERENCES.md."
+title: "ReconTrail: Local Capture Diagnostics and Inspectable 3D Reconstruction"
+type: software
+authors:
+  - name: "ReconTrail contributors"
+version: 0.1.0
+license: MIT
+abstract: "A local-first workbench for photo diagnostics, CPU sparse reconstruction, calibrated dense stereo, and portable offline inspection reports."
+keywords:
+  - photogrammetry
+  - structure-from-motion
+  - stereo
+  - reproducibility
+repository-code: "https://github.com/Afloat16/recontrail"
+url: "https://github.com/Afloat16/recontrail"

@@ -1,0 +1,11 @@
+include LICENSE README.md README.zh-CN.md README.en.md THIRD_PARTY_NOTICES.md CITATION.cff CONTRIBUTING.md SECURITY.md CHANGELOG.md
+include start.sh start.bat
+recursive-include src/recontrail/web *.html *.css *.js
+recursive-include docs *.md *.bib *.png *.json
+recursive-include tests *.py
+recursive-include scripts *.py
+recursive-include examples *.json *.md
+recursive-exclude * __pycache__ *.pyc
+
+include .gitignore .gitattributes
+recursive-include .github *.yml *.md *.json

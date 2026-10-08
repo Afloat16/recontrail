@@ -1,0 +1,22 @@
+name: Feature request / 功能建议
+description: Describe a concrete capture, reconstruction or delivery need.
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case / 具体场景
+      description: What input, desired output and present difficulty are involved?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria / 验收条件
+      description: Hardware, scale/accuracy requirements, licensing constraints and a reproducible example.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Existing alternatives / 已有替代方案
+      description: Cite upstream documentation or repository issues when relevant.

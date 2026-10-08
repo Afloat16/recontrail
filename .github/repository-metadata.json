@@ -1,0 +1,10 @@
+{
+  "description": "Local-first 3D reconstruction on your CPU. Inspect photo quality, recover sparse geometry and camera poses, reconstruct calibrated stereo, and share offline interactive reports. No cloud, GPU, or model downloads required.",
+  "topics": [
+    "3d-reconstruction", "photogrammetry", "structure-from-motion", "sfm",
+    "computer-vision", "multi-view-geometry", "stereo-vision", "point-cloud",
+    "camera-calibration", "colmap", "opencv", "python", "local-first",
+    "offline", "cpu", "image-quality", "3d-visualization",
+    "reproducible-research", "video-processing", "mesh-generation"
+  ]
+}
