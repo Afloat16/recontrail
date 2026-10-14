@@ -29,6 +29,41 @@ MAX_IMAGES = 160
 ID = re.compile(r"^[a-f0-9]{24}$")
 
 
+class UploadBody:
+    """Read only the authenticated, size-checked upload's declared bytes."""
+
+    def __init__(self, stream, length):
+        self.stream = stream
+        self.remaining = length
+        self.failed = False
+
+    def read(self, size):
+        try:
+            block = self.stream.read1(min(size, self.remaining))
+        except OSError:
+            self.failed = True
+            raise
+        self.remaining = self.remaining - len(block) if block else 0
+        return block
+
+    def discard(self, connection):
+        # Early rejection must not close while a normal client is still sending
+        # its bounded body (RFC 9112 section 9.6). Never read a failed stream again.
+        deadline = time.monotonic() + 30
+        timeout = connection.gettimeout()
+        try:
+            while self.remaining and not self.failed:
+                budget = deadline - time.monotonic()
+                if budget <= 0:
+                    break
+                connection.settimeout(min(timeout, budget) if timeout is not None else budget)
+                self.read(min(self.remaining, 64 * 1024))
+        except OSError:
+            pass  # A timed-out or disconnected sender cannot complete the body.
+        finally:
+            connection.settimeout(timeout)
+
+
 class JobStore:
     def __init__(self, root):
         self.root = Path(root).resolve()
@@ -270,6 +305,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self.allowed(auth=True):
             return
+        body = None
         try:
             if self.headers.get("Transfer-Encoding"):
                 raise ReconError("Chunked uploads are not supported.")
@@ -284,7 +320,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(413, {"error": "Request exceeds size limit (32 MiB per image)."})
             if is_upload:
                 name = parse_qs(split.query).get("name", [""])[0]
-                result = self.server.store.upload(parts[2], name, self.rfile, length)
+                body = UploadBody(self.rfile, length)
+                result = self.server.store.upload(parts[2], name, body, length)
             else:
                 raw = self.rfile.read(length)
                 if len(raw) != length:
@@ -302,6 +339,8 @@ class Handler(BaseHTTPRequestHandler):
                     return self.reply(404, {"error": "Not found."})
             self.reply(200, result)
         except (ReconError, OSError, ValueError, TypeError) as exc:
+            if body is not None:
+                body.discard(self.connection)
             self.reply(400, {"error": str(exc)[:500]})
 
 

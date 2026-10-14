@@ -83,7 +83,7 @@ def test_report_script_injection_is_escaped(tmp_path):
     assert '<' not in encoded and '&' not in encoded
     assert json.loads(encoded)["name"] == attack
     render_report(tmp_path/"report.html", {"notes":[attack],"images":[]})
-    content = (tmp_path/"report.html").read_text()
+    content = (tmp_path/"report.html").read_text(encoding="utf-8")
     assert attack not in content
     assert 'src="https:' not in content
     assert 'fetch(' not in content

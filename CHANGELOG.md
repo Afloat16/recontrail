@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Read UTF-8 report fixtures with an explicit encoding so Windows locale defaults do not break the report test.
+- Consume only the authenticated, size-checked remainder of rejected image uploads before returning an error, avoiding connection resets while clients are still sending. Discarding is limited to the declared body length and a 30-second deadline; oversized requests are still rejected without reading their bodies.
+- Add HTTP regression coverage for large rejected uploads and immediate size-limit rejection.
+
 ## Repository launch documentation
 
 - Make the homepage English-first, with a complete `README.zh-CN.md` and language navigation.

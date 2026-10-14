@@ -1,7 +1,9 @@
 import io
+import http.client
 import os
 from pathlib import Path
 import json
+import socket
 import threading
 import urllib.request
 import urllib.error
@@ -61,6 +63,78 @@ def test_http_upload_validation(local_server,capture):
     assert store.status(ident)['images']==1
     assert request(server,f'/api/jobs/{ident}/start',token=store.token,method='POST',data=b'{}')[0]==400
     assert request(server,'/api/jobs',token=store.token,method='POST',data=b'[]')[0]==400
+
+
+@pytest.mark.parametrize('rejection', ['filename', 'unknown_job', 'closed_job', 'image_limit'])
+def test_rejected_upload_consumes_body_before_reply(local_server, rejection):
+    server, store = local_server
+    ident = store.create()['id']
+    name = 'photo.png'
+    if rejection == 'filename':
+        name = '..%2Fescape.png'
+    elif rejection == 'unknown_job':
+        ident = '0' * 24
+    else:
+        from recontrail.storage import atomic_json
+        info = store.status(ident)
+        info.update(state='cancelled' if rejection == 'closed_job' else 'uploading',
+                    images=160 if rejection == 'image_limit' else 0)
+        atomic_json(store.path(ident)/'job.json', info)
+    body = b'x' * (3 * 1024 * 1024)
+    connection = http.client.HTTPConnection(server.expected_host, timeout=5)
+    try:
+        connection.putrequest('POST', f'/api/jobs/{ident}/images?name={name}')
+        connection.putheader('X-ReconTrail-Token', store.token)
+        connection.putheader('Content-Length', str(len(body)))
+        connection.endheaders()
+        connection.sock.settimeout(.25)
+        with pytest.raises(socket.timeout):
+            connection.sock.recv(1)
+        connection.sock.settimeout(5)
+        connection.send(body)
+        response = connection.getresponse()
+        assert response.status == 400
+        assert json.loads(response.read())['error']
+    finally:
+        connection.close()
+    for path in store.root.glob('*/input'):
+        assert not list(path.iterdir())
+
+
+def test_oversized_upload_is_rejected_without_body(local_server):
+    server, store = local_server
+    ident = store.create()['id']
+    connection = http.client.HTTPConnection(server.expected_host, timeout=2)
+    try:
+        connection.putrequest('POST', f'/api/jobs/{ident}/images?name=photo.png')
+        connection.putheader('X-ReconTrail-Token', store.token)
+        connection.putheader('Content-Length', str(MAX_UPLOAD + 1))
+        connection.endheaders()
+        response = connection.getresponse()
+        assert response.status == 413
+        response.read()
+    finally:
+        connection.close()
+    assert store.status(ident)['images'] == 0
+
+
+def test_http_incomplete_upload_is_removed(local_server):
+    server, store = local_server
+    ident = store.create()['id']
+    connection = http.client.HTTPConnection(server.expected_host, timeout=5)
+    try:
+        connection.putrequest('POST', f'/api/jobs/{ident}/images?name=photo.png')
+        connection.putheader('X-ReconTrail-Token', store.token)
+        connection.putheader('Content-Length', '500')
+        connection.endheaders(b'123')
+        connection.sock.shutdown(socket.SHUT_WR)
+        response = connection.getresponse()
+        assert response.status == 400
+        assert json.loads(response.read())['error'] == 'Incomplete upload.'
+    finally:
+        connection.close()
+    assert store.status(ident)['images'] == 0
+    assert not list((store.path(ident)/'input').iterdir())
 
 
 @pytest.mark.parametrize('ident',['../escape','abcd','x'*24,'a'*23+'/', ''])
