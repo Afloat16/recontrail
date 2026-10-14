@@ -82,6 +82,12 @@ python -m recontrail serve
 
 Open the **complete local URL printed in the terminal**, choose overlapping photos of one static scene, and start processing. Save the resulting offline report and PLY. Keep the access token in the URL private.
 
+For a first capture, the [usage guide](docs/USAGE.en.md#start-with-a-useful-capture)
+suggests 12–60 overlapping views with camera movement and useful parallax;
+this is a starting point, not a success guarantee. CLI photo folders read
+top-level JPG/JPEG, PNG, WebP, TIFF/TIF, and BMP files. They do not recursively
+scan subfolders or decode HEIC/RAW.
+
 The commands above install from this repository. A PyPI package publication is not assumed. `start.sh` and `start.bat` provide convenience launchers; target-platform validation is documented separately.
 
 ### Try it without taking photos
@@ -145,7 +151,7 @@ Photo poses use `X_camera = R @ X_world + t`. COLMAP export follows the [officia
 
 ## Scope and validation
 
-The recorded local CPU run completed **57 tests with 2 optional PyCOLMAP tests skipped**. The pre-upload rerun produced the same counts. The CI badge above links to actual workflow status rather than a hard-coded passing claim.
+The local CPU run recorded on **2026-10-08 for version 0.1.0** completed **57 tests with 2 optional PyCOLMAP tests skipped**. The pre-upload rerun produced the same counts. The CI badge above links to actual workflow status rather than a hard-coded passing claim.
 
 | Recorded synthetic example | Result |
 |---|---:|
@@ -189,3 +195,7 @@ See [third-party notices](THIRD_PARTY_NOTICES.md), [references and their role in
 ---
 
 **Useful to your capture workflow?** Star the repository to bookmark it, try the built-in demo, and share a reproducible result or failure case in an issue.
+
+## Related projects
+
+See the [Afloat16 project guide](https://github.com/Afloat16/research-to-fix/blob/main/docs/PROJECTS.md) for requirements debate, evidence-driven debugging, task checks, endpoint diagnostics, notifications, MCP advice, and local reconstruction.
